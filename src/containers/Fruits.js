@@ -59,9 +59,7 @@ export default function Fruits() {
       </View>
       )
     }
-
 }
-
 const styles1 = StyleSheet.create({
   box:{
     backgroundColor: '#531382',
