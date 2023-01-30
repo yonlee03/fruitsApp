@@ -5,7 +5,6 @@ import {Text, View,StyleSheet,FlatList,Image,RefreshControl,ScrollView} from 're
 export default function Fruits() {
     const [fruits,setfruits] = useState(null);
     const [refreshing, setRefreshing] = useState(false);
-    const [loading, setLoading]=useState(false)
     const wait = (timeout) =>
  { return new Promise(resolve => 
   { setTimeout(resolve, timeout); });}
@@ -14,6 +13,7 @@ export default function Fruits() {
        wait(2000).then(() =>
         setRefreshing(false)
       )}, []);
+
     const fruitImages = {
       'Piña.png' : require("../imgs/Piña.png"),
       'Manzana.png' : require("../imgs/Manzana.png"),
@@ -25,10 +25,11 @@ export default function Fruits() {
       'Pera.png' : require("../imgs/Pera.png"),
       }
     useEffect(() => {
-      fetch("http://192.168.1.139:8080/fruits")
+      fetch("http://192.168.43.137:8080/fruits")
       .then(response => response.json()) 
       .then((response) => {
         console.log("conexion realizada",response)
+        setRefreshing(false)
         setfruits(response);
       })
       .catch(error => console.log(error));
@@ -41,16 +42,17 @@ export default function Fruits() {
           <Text style={styles1.nombre}>Precio: {item.price}</Text>
       </View>
     )
-    if(loading==false){
+    if(refreshing==false){
       return(
-        <ScrollView refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}>
+
             <FlatList
         data={fruits}
         renderItem={renderItem}
         keyExtractor={item => item.id}
+        refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}
       />
-        </ScrollView>
+       
     ); 
     }else{
       return(
